@@ -1,3 +1,59 @@
+<?php echo $this->Html->script('easy-editable-text', array('inline'=>false)); ?>
+<style>
+	input[type=text]
+	{
+		margin-top:8px;
+		font-size:18px;
+		color:#545454;
+		-moz-border-radius: 2px;
+		-webkit-border-radius: 2px;
+		-border-radius: 2px;
+		display:none;
+		width:280px;
+		
+	}
+
+	textarea
+	{
+		margin-top:8px;
+		font-size:18px;
+		color:#545454;
+		-moz-border-radius: 2px;
+		-webkit-border-radius: 2px;
+		-border-radius: 2px;
+		display:none;
+		width:580px;
+		
+	}
+
+	label
+	{
+		float:left;
+		margin-top:8px;
+		font-size:18px;
+		color:#545454;
+		-moz-border-radius: 2px;
+		-webkit-border-radius: 2px;
+		-border-radius: 2px;
+	}
+
+	.edit
+	{
+		float:left;
+		background:url(images/edit.png) no-repeat;
+		width:25px;
+		height:25px;
+		display:block;
+		cursor: pointer;
+		margin-left:10px;
+	}
+
+	.clear
+	{
+		clear:both;
+		height:20px;
+	}
+</style>
 <div class="alert  ">
 <button class="close" data-dismiss="alert"></button>
 Question: Advanced Input Field</div>
@@ -16,7 +72,6 @@ Question: Advanced Input Field</div>
 </p>
 
 
-
 <div class="alert alert-success">
 <button class="close" data-dismiss="alert"></button>
 The table you start with</div>
@@ -32,13 +87,23 @@ The table you start with</div>
 
 <tbody>
 	<tr>
-	<td></td>
-	<td><textarea name="data[1][description]" class="m-wrap  description required" rows="2" ></textarea></td>
-	<td><input name="data[1][quantity]" class=""></td>
-	<td><input name="data[1][unit_price]"  class=""></td>
-	
-</tr>
-
+		<td></td>
+		<td>
+			<label class="text_label">Click The Pencil Icon to Edit Me</label>
+			<div class="edit"><?php echo $this->Html->image('edit', array('inline'=>false)); ?></div>
+			<textarea name="data[0][description]" class="m-wrap description required" rows="4"></textarea>
+		</td>
+		<td>
+			<label class="text_label">Click The Pencil Icon to Edit Me</label>
+			<div class="edit"><?php echo $this->Html->image('edit', array('inline'=>false)); ?></div>
+			<input name="data[0][quantity]" type="text" class="m-wrap description required" value="Click The Pencil Icon to Edit Me">
+		</td>
+		<td>
+			<label class="text_label">Click The Pencil Icon to Edit Me</label>
+			<div class="edit"><?php echo $this->Html->image('edit', array('inline'=>false)); ?></div>
+			<input name="data[0][unit_price]" type="text" class="m-wrap description required" value="Click The Pencil Icon to Edit Me">
+		</td>
+	</tr>
 </tbody>
 
 </table>
@@ -62,18 +127,89 @@ Your browser does not support the video tag.
 
 <?php $this->start('script_own');?>
 <script>
-$(document).ready(function(){
 
-	$("#add_item_button").click(function(){
+$(document).ready(function() {
+	
+	var max_fields = 10;
+	var wrapper = $(".table");
+	var add_button = $("#add_item_button");
 
+	var x = 1;
+	$(add_button).click(function(e) {
+		e.preventDefault();
+		if (x < max_fields) {
+			$(wrapper).append(
+				'<tr>'+
+				'<td></td>'+
+				'<td>'+
+					'<label class="text_label">Click The Pencil Icon to Edit Me</label>'+
+					'<div class="edit"><?php echo $this->Html->image("edit", array("inline"=>false)); ?></div>'+
+					'<textarea name="data['+x+'][description]" class="m-wrap description required" rows="4" ></textarea></td>'+
+				'<td>'+
+					'<label class="text_label">Click The Pencil Icon to Edit Me</label>'+
+					'<div class="edit"><?php echo $this->Html->image("edit", array("inline"=>false)); ?></div>'+
+					'<input name="data['+x+'][quantity]" type="text" class="m-wrap description required" value="Click The Pencil Icon to Edit Me">'+
+				'</td>'+
+				'<td>'+
+					'<label class="text_label">Click The Pencil Icon to Edit Me</label>'+
+					'<div class="edit"><?php echo $this->Html->image("edit", array("inline"=>false)); ?></div>'+
+					'<input name="data['+x+'][unit_price]" type="text" class="m-wrap description required" value="Click The Pencil Icon to Edit Me"></td>'+
+				'</tr>'
+			);
+			x++;
+		} 
+		else 
+		{
+			alert('You Reached the limits')
+		}
+		textToInputField();
+	});
+	textToInputField();
+});
 
-		alert("suppose to add a new row");
+// Text to input field
+function textToInputField(){
+	$(document).ready(function() {
+		$('.edit').click(function(){
+			$(this).hide();
+			$(this).prev().hide();
+			$(this).next().show();
+			$(this).next().select();
+		});
 		
-
+		
+		$('input[type="text"], textarea').blur(function() {  
+	        	if ($.trim(this.value) == ''){  
+				this.value = (this.defaultValue ? this.defaultValue : '');  
+			}
+			else{
+				$(this).prev().prev().html(this.value);
+			}
+			 
+			$(this).hide();
+			$(this).prev().show();
+			$(this).prev().prev().show();
 		});
 
-	
-});
+		  
+		$('input[type="text"], textarea').keypress(function(event) {
+			if (event.keyCode == '13') {
+				if ($.trim(this.value) == ''){  
+					 this.value = (this.defaultValue ? this.defaultValue : '');  
+				}
+				else
+				{
+					$(this).prev().prev().html(this.value);
+				}
+				 
+				$(this).hide();
+				$(this).prev().show();
+				$(this).prev().prev().show();
+			}
+		});
+	});
+}
+
 </script>
 <?php $this->end();?>
 
